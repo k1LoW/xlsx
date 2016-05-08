@@ -87,8 +87,8 @@ class Xlsx
             foreach ($sheets as $key => $sheet) {
                 // Replace sheet title
                 $title = $sheet->getTitle();
-                if ($this->__replace($title)) {
-                    $sheet->setTitle($this->__replace($title));
+                if ($this->replaceValue($title)) {
+                    $sheet->setTitle($this->replaceValue($title));
                 }
 
                 $rMax = $sheet->getHighestRow();
@@ -100,8 +100,8 @@ class Xlsx
                         if (is_object($value)) {
                             $value = $cell->getPlainText();
                         }
-                        if ($this->__replace($value)) {
-                            $cell->setValue($this->__replace($value));
+                        if ($this->replaceValue($value)) {
+                            $cell->setValue($this->replaceValue($value));
                         }
                     }
                 }
@@ -109,7 +109,7 @@ class Xlsx
         }
 
         if (empty($this->type)) {
-            $this->type = $this->__getType($outputFilePath);
+            $this->type = $this->getType($outputFilePath);
         }
 
         $xlsWriter = PHPExcel_IOFactory::createWriter($this->xlsx, $this->type);
@@ -170,11 +170,17 @@ class Xlsx
             if (is_array($option['border'])) {
                 foreach (['top', 'right', 'left', 'bottom'] as $position) {
                     if (array_key_exists($position, $option['border'])) {
-                        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getBorders()->{'get'.ucfirst($position)}()->setBorderStyle($option['border'][$position]);
+                        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                            ->getBorders()
+                            ->{'get'.ucfirst($position)}()
+                            ->setBorderStyle($option['border'][$position]);
                     }
                 }
             } else {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getBorders()->getAllBorders()->setBorderStyle($option['border']);
+                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                    ->getBorders()
+                    ->getAllBorders()
+                    ->setBorderStyle($option['border']);
             }
         }
 
@@ -199,32 +205,51 @@ class Xlsx
 
         // font
         if (array_key_exists('font', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFont()->setName($option['font']);
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFont()
+                ->setName($option['font']);
         }
 
         // font color
         if (array_key_exists('color', $option)) {
             if (strlen($option['color']) === 8) {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFont()->getColor()->setARGB($option['color']);
+                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                    ->getFont()
+                    ->getColor()
+                    ->setARGB($option['color']);
             } elseif (strlen($option['color']) === 6) {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFont()->getColor()->setRGB($option['color']);
+                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                    ->getFont()
+                    ->getColor()
+                    ->setRGB($option['color']);
             }
         }
 
         // font size
         if (array_key_exists('size', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFont()->setSize($option['size']);
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFont()
+                ->setSize($option['size']);
         }
 
         // backgroundColor / backgroundType
         if (array_key_exists('backgroundColor', $option)) {
             $type = empty($option['backgroundType']) ? PHPExcel_Style_Fill::FILL_SOLID : $option['backgroundType'];
             if (strlen($option['backgroundColor']) === 8) {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFill()->setFillType($type);
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFill()->getStartColor()->setARGB($option['backgroundColor']);
+                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                    ->getFill()
+                    ->setFillType($type);
+                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFill()
+                    ->getStartColor()
+                    ->setARGB($option['backgroundColor']);
             } elseif (strlen($option['backgroundColor']) === 6) {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFill()->setFillType($type);
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFill()->getStartColor()->setRGB($option['backgroundColor']);
+                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                    ->getFill()
+                    ->setFillType($type);
+                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                    ->getFill()
+                    ->getStartColor()
+                    ->setRGB($option['backgroundColor']);
             }
         }
 
@@ -254,11 +279,11 @@ class Xlsx
     }
 
     /**
-     * __getType.
+     * getType.
      *
      * @see IOFactory::createReaderForFile
      */
-    private function __getType($filePath)
+    private function getType($filePath)
     {
         $pathinfo = pathinfo($filePath);
 
@@ -307,9 +332,9 @@ class Xlsx
     }
 
     /**
-     * __replace.
+     * replaceValue.
      */
-    private function __replace($value)
+    private function replaceValue($value)
     {
         if (empty($value)) {
             return false;

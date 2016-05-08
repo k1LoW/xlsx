@@ -32,44 +32,53 @@ class XlsxTest extends \PHPUnit_Framework_TestCase
     {
         $fileName = 'testbook.xlsx';
         $this->inputFilePath = '/tmp/'.$fileName;
-        $this->outputFilePath = '/tmp/output.xlsx';
+        $this->outputFilePath = '/tmp/'.'output.xlsx';
         $this->_setTestFile($fileName, $this->inputFilePath);
 
         $this->xlsx = new Xlsx();
         $result = $this->xlsx->read($this->inputFilePath)
-            ->setValue('testset', ['col' => 'B', // jpn: col / row / sheetを指定してセット可能
-                                        'row' => '10',
-                                        ])
-            ->setValue('testset_with_sheet', ['col' => 'B', // jpn: col / row / sheetを指定してセット可能
-                                                   'row' => '10',
-                                                   'sheet' => 2,
-                                                   ])
-            ->setValue('testset_with_border', ['col' => 'C', // jpn: borderを指定してセット可能
-                                                    'row' => '10',
-                                                    'border' => ['top' => PHPExcel_Style_Border::BORDER_THICK,
-                                                                      'right' => PHPExcel_Style_Border::BORDER_MEDIUM,
-                                                                      'left' => PHPExcel_Style_Border::BORDER_THIN,
-                                                                      'bottom' => PHPExcel_Style_Border::BORDER_DOUBLE,
-                                                                      ],
-                                                    ])
-            ->setValue('testset_with_border', ['col' => 'E',
-                                                    'row' => '10',
-                                                    'border' => PHPExcel_Style_Border::BORDER_THICK,  // jpn: borderを一括指定可能
-                                                    ])
-            ->setValue('testset_with_color', ['col' => 'F', // jpn: colorを指定可能
-                                                   'row' => '10',
-                                                   'color' => PHPExcel_Style_Color::COLOR_BLUE,
-                                                   ])
-            ->setValue('testset_with_backgroud_color', ['col' => 'G', // jpn: backgroundColorを指定可能
-                                                             'row' => '10',
-                                                             'backgroundColor' => PHPExcel_Style_Color::COLOR_YELLOW,
-                                                             ])
-            ->set(['Sheet1' => 'シートタイトル', // jpn: 文字列置換でセット可能
-                        'test' => 'replaced',
-                        '4' => 5, ])
-            ->write($this->outputFilePath);
+                ->setValue('testset', [
+                    'col' => 'B', // jpn: col / row / sheetを指定してセット可能
+                    'row' => '10',
+                ])
+                ->setValue('testset_with_sheet', [
+                    'col' => 'B', // jpn: col / row / sheetを指定してセット可能
+                    'row' => '10',
+                    'sheet' => 2,
+                ])
+                ->setValue('testset_with_border', [
+                    'col' => 'C', // jpn: borderを指定してセット可能
+                    'row' => '10',
+                    'border' => [
+                        'top' => PHPExcel_Style_Border::BORDER_THICK,
+                        'right' => PHPExcel_Style_Border::BORDER_MEDIUM,
+                        'left' => PHPExcel_Style_Border::BORDER_THIN,
+                        'bottom' => PHPExcel_Style_Border::BORDER_DOUBLE,
+                    ],
+                ])
+                ->setValue('testset_with_border', [
+                    'col' => 'E',
+                    'row' => '10',
+                    'border' => PHPExcel_Style_Border::BORDER_THICK,  // jpn: borderを一括指定可能
+                ])
+                ->setValue('testset_with_color', [
+                    'col' => 'F', // jpn: colorを指定可能
+                    'row' => '10',
+                    'color' => PHPExcel_Style_Color::COLOR_BLUE,
+                ])
+                ->setValue('testset_with_backgroud_color', [
+                    'col' => 'G', // jpn: backgroundColorを指定可能
+                    'row' => '10',
+                    'backgroundColor' => PHPExcel_Style_Color::COLOR_YELLOW,
+                ])
+                ->set([
+                    'Sheet1' => 'シートタイトル', // jpn: 文字列置換でセット可能
+                    'test' => 'replaced',
+                    '4' => 5,
+                ])
+                ->write($this->outputFilePath);
         $this->assertTrue($result);
-        echo 'Look '.$this->outputFilePath.PHP_EOL;
+        echo PHP_EOL.'Look '.$this->outputFilePath.PHP_EOL;
         echo 'Peak memory usage: '.(memory_get_peak_usage(true) / 1024 / 1024).' MB'.PHP_EOL;
     }
 
@@ -80,44 +89,54 @@ class XlsxTest extends \PHPUnit_Framework_TestCase
     {
         $fileName = 'testbook.xls';
         $this->inputFilePath = '/tmp/'.$fileName;
-        $this->outputFilePath = '/tmp/output.xls';
+        $this->outputFilePath = '/tmp/'.'output.xls';
         $this->_setTestFile($fileName, $this->inputFilePath);
 
         $this->xlsx = new Xlsx($this->inputFilePath);
         // jpn: col / row / sheetを指定してセット可能
-        $this->xlsx->setValue('testset', ['col' => 'B', // jpn: col / row / sheetを指定してセット可能
-                                              'row' => '10',
-                                              ])
-            ->setValue('testset_with_sheet', ['col' => 'B', // jpn: col / row / sheetを指定してセット可能
-                                                   'row' => '10',
-                                                   'sheet' => 2,
-                                                   ])
-            ->setValue('testset_with_border', ['col' => 'C', // jpn: borderを指定可能
-                                                    'row' => '10',
-                                                    'border' => ['top' => PHPExcel_Style_Border::BORDER_THICK,
-                                                                      'right' => PHPExcel_Style_Border::BORDER_MEDIUM,
-                                                                      'left' => PHPExcel_Style_Border::BORDER_THIN,
-                                                                      'bottom' => PHPExcel_Style_Border::BORDER_DOUBLE,
-                                                                      ],
-                                                    ])
-            ->setValue('testset_with_border', ['col' => 'E',
-                                                    'row' => '10',
-                                                    'border' => PHPExcel_Style_Border::BORDER_THICK,  // jpn: borderを一括指定可能
-                                                    ])
-            ->setValue('testset_with_color', ['col' => 'F', // jpn: colorを指定可能
-                                                   'row' => '10',
-                                                   'color' => PHPExcel_Style_Color::COLOR_BLUE,
-                                                   ])
-            ->setValue('testset_with_backgroud_color', ['col' => 'G', // jpn: backgroundColorを指定可能
-                                                             'row' => '10',
-                                                             'backgroundColor' => PHPExcel_Style_Color::COLOR_YELLOW,
-                                                             ])
-            ->set(['Sheet1' => 'シートタイトル',         // jpn: 文字列置換でセット可能
-                        'test' => 'replaced',
-                        '4' => 5, ]);
+        $this->xlsx
+            ->setValue('testset', [
+                'col' => 'B', // jpn: col / row / sheetを指定してセット可能
+                'row' => '10',
+            ])
+            ->setValue('testset_with_sheet', [
+                'col' => 'B', // jpn: col / row / sheetを指定してセット可能
+                'row' => '10',
+                'sheet' => 2,
+            ])
+            ->setValue('testset_with_border', [
+                'col' => 'C', // jpn: borderを指定可能
+                'row' => '10',
+                'border' => [
+                    'top' => PHPExcel_Style_Border::BORDER_THICK,
+                    'right' => PHPExcel_Style_Border::BORDER_MEDIUM,
+                    'left' => PHPExcel_Style_Border::BORDER_THIN,
+                    'bottom' => PHPExcel_Style_Border::BORDER_DOUBLE,
+                ],
+            ])
+            ->setValue('testset_with_border', [
+                'col' => 'E',
+                'row' => '10',
+                'border' => PHPExcel_Style_Border::BORDER_THICK,  // jpn: borderを一括指定可能
+            ])
+            ->setValue('testset_with_color', [
+                'col' => 'F', // jpn: colorを指定可能
+                'row' => '10',
+                'color' => PHPExcel_Style_Color::COLOR_BLUE,
+            ])
+            ->setValue('testset_with_backgroud_color', [
+                'col' => 'G', // jpn: backgroundColorを指定可能
+                'row' => '10',
+                'backgroundColor' => PHPExcel_Style_Color::COLOR_YELLOW,
+            ])
+            ->set([
+                'Sheet1' => 'シートタイトル',         // jpn: 文字列置換でセット可能
+                'test' => 'replaced',
+                '4' => 5,
+            ]);
         $result = $this->xlsx->write($this->outputFilePath);
         $this->assertTrue($result);
-        echo 'Look '.$this->outputFilePath.PHP_EOL;
+        echo PHP_EOL.'Look '.$this->outputFilePath.PHP_EOL;
         echo 'Peak memory usage: '.(memory_get_peak_usage(true) / 1024 / 1024).' MB'.PHP_EOL;
     }
 
@@ -128,14 +147,15 @@ class XlsxTest extends \PHPUnit_Framework_TestCase
     {
         $this->outputFilePath = '/tmp/outputnew.xlsx';
 
-        $this->xls = new Xlsx();
-        $result = $this->xls
-            ->setValue('testset', ['col' => 'B', // jpn: col / row / sheetを指定してセット可能
-                                        'row' => '10',
-                                        ])
-            ->write($this->outputFilePath);
+        $this->xlsx = new Xlsx();
+        $result = $this->xlsx
+                ->setValue('testset', [
+                    'col' => 'B', // jpn: col / row / sheetを指定してセット可能
+                    'row' => '10',
+                ])
+                ->write($this->outputFilePath);
         $this->assertTrue($result);
-        echo 'Look '.$this->outputFilePath.PHP_EOL;
+        echo PHP_EOL.'Look '.$this->outputFilePath.PHP_EOL;
         echo 'Peak memory usage: '.(memory_get_peak_usage(true) / 1024 / 1024).' MB'.PHP_EOL;
     }
 
@@ -146,14 +166,15 @@ class XlsxTest extends \PHPUnit_Framework_TestCase
     {
         $this->outputFilePath = '/tmp/outputnew.xls';
 
-        $this->xls = new Xlsx();
-        $result = $this->xls
-            ->setValue('testset', ['col' => 'B', // jpn: col / row / sheetを指定してセット可能
-                                        'row' => '10',
-                                        ])
-            ->write($this->outputFilePath);
+        $this->xlsx = new Xlsx();
+        $result = $this->xlsx
+                ->setValue('testset', [
+                    'col' => 'B', // jpn: col / row / sheetを指定してセット可能
+                    'row' => '10',
+                ])
+                ->write($this->outputFilePath);
         $this->assertTrue($result);
-        echo 'Look '.$this->outputFilePath.PHP_EOL;
+        echo PHP_EOL.'Look '.$this->outputFilePath.PHP_EOL;
         echo 'Peak memory usage: '.(memory_get_peak_usage(true) / 1024 / 1024).' MB'.PHP_EOL;
     }
 
@@ -169,18 +190,20 @@ class XlsxTest extends \PHPUnit_Framework_TestCase
         $this->outputFilePath = '/tmp/'.'outputmany.xlsx';
         $this->_setTestFile($fileName, $this->inputFilePath);
 
-        $this->xls = new Xlsx($this->inputFilePath);
+        $this->xlsx = new Xlsx($this->inputFilePath);
 
         for ($c = 0; $c < 100; ++$c) {
             for ($r = 1; $r < 100; ++$r) {
-                $this->xls->setValue('testset', ['col' => $c,
-                                                      'row' => $r,
-                                                      ]);
+                $this->xlsx
+                    ->setValue('testset', [
+                        'col' => $c,
+                        'row' => $r,
+                    ]);
             }
         }
-        $result = $this->xls->write($this->outputFilePath);
+        $result = $this->xlsx->write($this->outputFilePath);
         $this->assertTrue($result);
-        echo 'Look '.$this->outputFilePath.PHP_EOL;
+        echo PHP_EOL.'Look '.$this->outputFilePath.PHP_EOL;
         echo 'Peak memory usage: '.(memory_get_peak_usage(true) / 1024 / 1024).' MB'.PHP_EOL;
     }
 
@@ -196,18 +219,20 @@ class XlsxTest extends \PHPUnit_Framework_TestCase
         $this->outputFilePath = '/tmp/'.'outputmany.xls';
         $this->_setTestFile($fileName, $this->inputFilePath);
 
-        $this->xls = new Xlsx($this->inputFilePath);
+        $this->xlsx = new Xlsx($this->inputFilePath);
 
         for ($c = 0; $c < 100; ++$c) {
             for ($r = 1; $r < 100; ++$r) {
-                $this->xls->setValue('testset', ['col' => $c,
-                                                      'row' => $r,
-                                                      ]);
+                $this->xlsx
+                    ->setValue('testset', [
+                        'col' => $c,
+                        'row' => $r,
+                    ]);
             }
         }
-        $result = $this->xls->write($this->outputFilePath);
+        $result = $this->xlsx->write($this->outputFilePath);
         $this->assertTrue($result);
-        echo 'Look '.$this->outputFilePath.PHP_EOL;
+        echo PHP_EOL.'Look '.$this->outputFilePath.PHP_EOL;
         echo 'Peak memory usage: '.(memory_get_peak_usage(true) / 1024 / 1024).' MB'.PHP_EOL;
     }
 
@@ -221,16 +246,16 @@ class XlsxTest extends \PHPUnit_Framework_TestCase
         $this->outputFilePath = '/tmp/'.'outputsetmany.xlsx';
         $this->_setTestFile($fileName, $this->inputFilePath);
 
-        $this->xls = new Xlsx($this->inputFilePath);
+        $this->xlsx = new Xlsx($this->inputFilePath);
         for ($c = 'a'; Xlsx::alphabetToNumber($c) < 100; ++$c) {
             for ($r = 1; $r < 100; ++$r) {
-                $this->xls->set('$'.strtoupper($c).'$'.$r, 'replaced');
+                $this->xlsx->set('$'.strtoupper($c).'$'.$r, 'replaced');
             }
         }
 
-        $result = $this->xls->write($this->outputFilePath);
+        $result = $this->xlsx->write($this->outputFilePath);
         $this->assertTrue($result);
-        echo 'Look '.$this->outputFilePath.PHP_EOL;
+        echo PHP_EOL.'Look '.$this->outputFilePath.PHP_EOL;
         echo 'Peak memory usage: '.(memory_get_peak_usage(true) / 1024 / 1024).' MB'.PHP_EOL;
     }
 
@@ -243,16 +268,16 @@ class XlsxTest extends \PHPUnit_Framework_TestCase
         $this->inputFilePath = '/tmp/'.$fileName;
         $this->outputFilePath = '/tmp/'.'outputsetmany.xls';
         $this->_setTestFile($fileName, $this->inputFilePath);
-        $this->xls = new Xlsx($this->inputFilePath);
+        $this->xlsx = new Xlsx($this->inputFilePath);
         for ($c = 'a'; Xlsx::alphabetToNumber($c) < 100; ++$c) {
             for ($r = 1; $r < 100; ++$r) {
-                $this->xls->set('$'.strtoupper($c).'$'.$r, 'replaced');
+                $this->xlsx->set('$'.strtoupper($c).'$'.$r, 'replaced');
             }
         }
 
-        $result = $this->xls->write($this->outputFilePath);
+        $result = $this->xlsx->write($this->outputFilePath);
         $this->assertTrue($result);
-        echo 'Look '.$this->outputFilePath.PHP_EOL;
+        echo PHP_EOL.'Look '.$this->outputFilePath.PHP_EOL;
         echo 'Peak memory usage: '.(memory_get_peak_usage(true) / 1024 / 1024).' MB'.PHP_EOL;
     }
 
