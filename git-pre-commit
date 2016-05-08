@@ -1,0 +1,103 @@
+#!/bin/bash
+#
+# cf. http://labs.gree.jp/blog/2011/03/2885/
+#
+
+PHP_CODE=$(cat <<'EOS'
+$output = array();
+$return = 0;
+exec('git rev-parse --verify HEAD 2> /dev/null', $output, $return);
+$against = $return == 0 ? 'HEAD' : '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
+
+exec("git diff-index --cached --name-only {$against}", $files);
+
+$filename_pattern = '/\.(php|ctp)$/';
+$ignore_file_patterns = array(
+
+);
+$exit_status = 0;
+
+foreach ($files as $file) {
+    if (!preg_match($filename_pattern, $file)) {
+        // don't check files that aren't PHP
+        continue;
+    }
+    foreach ($ignore_file_patterns as $ignore_file_pattern) {
+        // ignore
+        if (preg_match($ignore_file_pattern, $file)) {
+            continue 2;
+        }
+    }
+    if (!file_exists($file)) {
+        // delete file
+        continue;
+    }
+
+    // http://cs.sensiolabs.org/
+    ob_start();
+    passthru('./vendor/bin/php-cs-fixer fix ' . escapeshellarg($file) . ' -v --ansi', $return);
+    $output = ob_get_clean();
+    if ($return != 0) {
+        echo "CS fixed:", PHP_EOL;
+        echo $output;
+        passthru('git diff --color=always ' . escapeshellarg($file));
+        echo PHP_EOL, '----', PHP_EOL;
+        $exit_status = 1;
+
+        continue;
+    }
+
+    // thomasbachem/php-short-array-syntax-converter
+    ob_start();
+    passthru('cat ' . escapeshellarg($file), $return);
+    $before = ob_get_clean();
+    ob_start();
+    passthru('./vendor/bin/array-converter ' . escapeshellarg($file), $return);
+    $after = ob_get_clean();
+    if ($before != $after) {
+        ob_start();
+        passthru('./vendor/bin/array-converter -w ' . escapeshellarg($file), $return);
+        $output = ob_get_clean();
+        echo implode(PHP_EOL, $after), PHP_EOL;
+        echo PHP_EOL, '----', PHP_EOL;
+        $exit_status = 1;
+
+        continue;
+    }
+
+    // php lint
+    $output = array();
+    exec('php -l ' . escapeshellarg($file), $output, $return);
+    if ($return != 0) {
+        echo implode(PHP_EOL, $output), PHP_EOL;
+        echo PHP_EOL, '----', PHP_EOL;
+        $exit_status = 1;
+
+        continue;
+    }
+}
+
+exit($exit_status);
+
+EOS
+)
+
+php -r "$PHP_CODE"
+php_status=$?
+if test $php_status -ne 0
+then
+    echo "git pre-commit hook error"
+    echo "please fix the error and retry commit"
+    cat <<HOGE
+
+    if remove from the index:
+        $ git reset
+
+    if edit the file to fix errors and retry commit:
+        $ edit FILE_NAME ...
+        $ git add FILE_NAME
+        $ git commit
+
+HOGE
+    exit $php_status
+fi

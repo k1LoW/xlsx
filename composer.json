@@ -1,0 +1,33 @@
+{
+    "name": "k1low/xlsx",
+    "description": "xlsx: PHPExcel wrapper",
+    "keywords": ["excel"],
+    "homepage": "https://github.com/k1LoW/xlsx",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ken'ichiro Oyama",
+            "homepage": "https://github.com/k1LoW",
+            "role": "Author"
+        }
+    ],    
+    "require": {
+        "php": "~5.4",
+        "phpoffice/phpexcel": "1.8.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=4.1.0",
+        "fabpot/php-cs-fixer": "*",
+        "thomasbachem/php-short-array-syntax-converter": "dev-master",
+        "phpmd/phpmd": "*",
+        "symfony/var-dumper": "*"
+	  },
+    "autoload": {
+        "psr-4": { "Xlsx\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Xlsx\\Test\\": "tests"
+        }
+    }
+}
