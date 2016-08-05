@@ -165,6 +165,20 @@ class Xlsx
         $sheet = $this->xlsx->getActiveSheet();
         $sheet->setCellValueByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'], $value);
 
+        if (array_key_exists('mergeCell', $option)) {
+            if (!array_key_exists('col', $option['mergeCell'])
+                || !array_key_exists('row', $option['mergeCell'])
+            ) {
+                return false;
+            }
+
+            // cellの範囲
+            $cell = $option['col'].$option['row'];
+            $cell .= ':'.$option['mergeCell']['col'].$option['mergeCell']['row'];
+
+            $sheet->mergeCells($cell);
+        }
+
         // border
         if (array_key_exists('border', $option)) {
             if (is_array($option['border'])) {
