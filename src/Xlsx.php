@@ -198,23 +198,7 @@ class Xlsx
 
         // backgroundColor / backgroundType
         if (array_key_exists('backgroundColor', $option)) {
-            $type = empty($option['backgroundType']) ? PHPExcel_Style_Fill::FILL_SOLID : $option['backgroundType'];
-            if (strlen($option['backgroundColor']) === 8) {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                    ->getFill()
-                    ->setFillType($type);
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFill()
-                    ->getStartColor()
-                    ->setARGB($option['backgroundColor']);
-            } elseif (strlen($option['backgroundColor']) === 6) {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                    ->getFill()
-                    ->setFillType($type);
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                    ->getFill()
-                    ->getStartColor()
-                    ->setRGB($option['backgroundColor']);
-            }
+            $this->setBackgroundColor($option);
         }
 
         return $this;
@@ -277,6 +261,11 @@ class Xlsx
         // font size
         if (array_key_exists('size', $option)) {
             $this->setFontSize($option);
+        }
+
+        // backgroundColor / backgroundType
+        if (array_key_exists('backgroundColor', $option)) {
+            $this->setBackgroundColor($option);
         }
 
         return $this;
@@ -398,6 +387,29 @@ class Xlsx
         $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getFont()
                 ->setSize($option['size']);
+    }
+
+    private function setBackgroundColor($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $type = empty($option['backgroundType']) ? PHPExcel_Style_Fill::FILL_SOLID : $option['backgroundType'];
+        if (strlen($option['backgroundColor']) === 8) {
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFill()
+                ->setFillType($type);
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFill()
+                ->getStartColor()
+                ->setARGB($option['backgroundColor']);
+        } elseif (strlen($option['backgroundColor']) === 6) {
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFill()
+                ->setFillType($type);
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFill()
+                ->getStartColor()
+                ->setRGB($option['backgroundColor']);
+        }
     }
 
     /**
