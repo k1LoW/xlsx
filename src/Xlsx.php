@@ -193,9 +193,7 @@ class Xlsx
 
         // font size
         if (array_key_exists('size', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                ->getFont()
-                ->setSize($option['size']);
+            $this->setFontSize($option);
         }
 
         // backgroundColor / backgroundType
@@ -274,6 +272,11 @@ class Xlsx
         // font color
         if (array_key_exists('color', $option)) {
             $this->setFontColoer($option);
+        }
+
+        // font size
+        if (array_key_exists('size', $option)) {
+            $this->setFontSize($option);
         }
 
         return $this;
@@ -383,6 +386,18 @@ class Xlsx
                 ->getColor()
                 ->setRGB($option['color']);
         }
+    }
+
+    /**
+     * setFontSize.
+     */
+    private function setFontSize($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFont()
+                ->setSize($option['size']);
     }
 
     /**
