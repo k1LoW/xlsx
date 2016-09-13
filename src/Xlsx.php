@@ -178,9 +178,7 @@ class Xlsx
 
         // align vertical
         if (array_key_exists('vAlign', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                ->getAlignment()
-                ->setVertical($option['vAlign']);
+            $this->setVertical($option);
         }
 
         // font
@@ -275,6 +273,11 @@ class Xlsx
             $this->setHorizontal($option);
         }
 
+        // align vertical
+        if (array_key_exists('vAlign', $option)) {
+            $this->setVertical($option);
+        }
+
         return $this;
     }
 
@@ -329,7 +332,7 @@ class Xlsx
     }
 
     /**
-     * setAlign.
+     * setHorizontal.
      */
     private function setHorizontal($option)
     {
@@ -338,6 +341,18 @@ class Xlsx
         $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getAlignment()
                 ->setHorizontal($option['hAlign']);
+    }
+
+    /**
+     * setVertical.
+     */
+    private function setVertical($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getAlignment()
+                ->setVertical($option['vAlign']);
     }
 
     /**
