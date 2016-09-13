@@ -150,9 +150,7 @@ class Xlsx
                                                 'row' => '1',
                                                 'sheet' => 0, ])
     {
-        if (!array_key_exists('col', $option)
-            || !array_key_exists('row', $option)
-        ) {
+        if (!$this->checkKeysFromOptions(['col', 'row'], $option)) {
             return false;
         }
         if (!array_key_exists('sheet', $option)) {
@@ -259,22 +257,70 @@ class Xlsx
     /**
      * mergeCells.
      */
-    public function mergeCells($option = ['fromCol' => 'A',
-                                          'fromRow' => '1',
+    public function mergeCells($option = ['col' => 'A',
+                                          'row' => '1',
                                           'toCol' => 'A',
                                           'toRow' => '1',
                                           'sheet' => 0, ])
     {
-        // compulsory article
-        if (!array_key_exists('fromCol', $option)
-            || !array_key_exists('fromRow', $option)
-            || !array_key_exists('toCol', $option)
-            || !array_key_exists('toRow', $option)
-        ) {
+        if (!$this->checkKeysFromOptions(['fromCol', 'fromRow', 'toCol', 'toRow'], $option)) {
             return false;
+        }
+        if (!array_key_exists('sheet', $option)) {
+            $option['sheet'] = 0;
+        }
+        if (empty($this->xlsx)) {
+            $this->xlsx = new PHPExcel();
+        }
+        $this->xlsx->setActiveSheetIndex($option['sheet']);
+        $sheet = $this->xlsx->getActiveSheet();
+
+        // mergeCell
+        $cell = $option['fromCol'].$option['fromRow'];
+        $cell .= ':'.$option['toCol'].$option['toRow'];
+        $sheet->mergeCells($cell);
+
+        // border
+        if (array_key_exists('border', $option)) {
+            $this->setBorder($sheet);
         }
 
         return $this;
+    }
+
+    private function setBorder($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        if (is_array($option['border'])) {
+            foreach (['top', 'right', 'left', 'bottom'] as $position) {
+                if (array_key_exists($position, $option['border'])) {
+                    $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                        ->getBorders()
+                        ->{'get'.ucfirst($position)}()
+                        ->setBorderStyle($option['border'][$position]);
+                }
+            }
+        } else {
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getBorders()
+                ->getAllBorders()
+                ->setBorderStyle($option['border']);
+        }
+    }
+
+    /**
+     * checkKeysFromOption.
+     */
+    private function checkKeysFromOption($keys, $option)
+    {
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $option)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
