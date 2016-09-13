@@ -150,9 +150,7 @@ class Xlsx
                                                 'row' => '1',
                                                 'sheet' => 0, ])
     {
-        if (!array_key_exists('col', $option)
-            || !array_key_exists('row', $option)
-        ) {
+        if (!$this->checkKeysFromOption(['col', 'row'], $option)) {
             return false;
         }
         if (!array_key_exists('sheet', $option)) {
@@ -167,93 +165,251 @@ class Xlsx
 
         // border
         if (array_key_exists('border', $option)) {
-            if (is_array($option['border'])) {
-                foreach (['top', 'right', 'left', 'bottom'] as $position) {
-                    if (array_key_exists($position, $option['border'])) {
-                        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                            ->getBorders()
-                            ->{'get'.ucfirst($position)}()
-                            ->setBorderStyle($option['border'][$position]);
-                    }
-                }
-            } else {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                    ->getBorders()
-                    ->getAllBorders()
-                    ->setBorderStyle($option['border']);
-            }
+            $this->setBorder($option);
         }
 
         // align horizontal
         if (array_key_exists('align', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                ->getAlignment()
-                ->setHorizontal($option['align']);
+            $this->setAlign($option);
         }
         if (array_key_exists('hAlign', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                ->getAlignment()
-                ->setHorizontal($option['hAlign']);
+            $this->setHorizontal($option);
         }
 
         // align vertical
         if (array_key_exists('vAlign', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                ->getAlignment()
-                ->setVertical($option['vAlign']);
+            $this->setVertical($option);
         }
 
         // font
         if (array_key_exists('font', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                ->getFont()
-                ->setName($option['font']);
+            $this->setFont($option);
         }
 
         // font color
         if (array_key_exists('color', $option)) {
-            if (strlen($option['color']) === 8) {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                    ->getFont()
-                    ->getColor()
-                    ->setARGB($option['color']);
-            } elseif (strlen($option['color']) === 6) {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                    ->getFont()
-                    ->getColor()
-                    ->setRGB($option['color']);
-            }
+            $this->setFontColoer($option);
         }
 
         // font size
         if (array_key_exists('size', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                ->getFont()
-                ->setSize($option['size']);
+            $this->setFontSize($option);
         }
 
         // backgroundColor / backgroundType
         if (array_key_exists('backgroundColor', $option)) {
-            $type = empty($option['backgroundType']) ? PHPExcel_Style_Fill::FILL_SOLID : $option['backgroundType'];
-            if (strlen($option['backgroundColor']) === 8) {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                    ->getFill()
-                    ->setFillType($type);
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFill()
-                    ->getStartColor()
-                    ->setARGB($option['backgroundColor']);
-            } elseif (strlen($option['backgroundColor']) === 6) {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                    ->getFill()
-                    ->setFillType($type);
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                    ->getFill()
-                    ->getStartColor()
-                    ->setRGB($option['backgroundColor']);
-            }
+            $this->setBackgroundColor($option);
         }
 
         return $this;
+    }
+
+    /**
+     * mergeCells.
+     */
+    public function mergeCells($option = ['col' => 'A',
+                                          'row' => '1',
+                                          'toCol' => 'A',
+                                          'toRow' => '1',
+                                          'sheet' => 0, ])
+    {
+        if (!$this->checkKeysFromOption(['fromCol', 'fromRow', 'toCol', 'toRow'], $option)) {
+            return false;
+        }
+        if (!array_key_exists('sheet', $option)) {
+            $option['sheet'] = 0;
+        }
+        if (empty($this->xlsx)) {
+            $this->xlsx = new PHPExcel();
+        }
+        $this->xlsx->setActiveSheetIndex($option['sheet']);
+        $sheet = $this->xlsx->getActiveSheet();
+
+        // mergeCell
+        $cell = $option['fromCol'].$option['fromRow'];
+        $cell .= ':'.$option['toCol'].$option['toRow'];
+        $sheet->mergeCells($cell);
+
+        // border
+        if (array_key_exists('border', $option)) {
+            $this->setBorder($option);
+        }
+
+        // align horizontal
+        if (array_key_exists('align', $option)) {
+            $this->setAlign($option);
+        }
+        if (array_key_exists('hAlign', $option)) {
+            $this->setHorizontal($option);
+        }
+
+        // align vertical
+        if (array_key_exists('vAlign', $option)) {
+            $this->setVertical($option);
+        }
+
+        // font
+        if (array_key_exists('font', $option)) {
+            $this->setFont($option);
+        }
+
+        // font color
+        if (array_key_exists('color', $option)) {
+            $this->setFontColoer($option);
+        }
+
+        // font size
+        if (array_key_exists('size', $option)) {
+            $this->setFontSize($option);
+        }
+
+        // backgroundColor / backgroundType
+        if (array_key_exists('backgroundColor', $option)) {
+            $this->setBackgroundColor($option);
+        }
+
+        return $this;
+    }
+
+    /**
+     * checkKeysFromOption.
+     */
+    private function checkKeysFromOption($keys, $option)
+    {
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $option)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * setBorder.
+     */
+    private function setBorder($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        if (is_array($option['border'])) {
+            foreach (['top', 'right', 'left', 'bottom'] as $position) {
+                if (array_key_exists($position, $option['border'])) {
+                    $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                        ->getBorders()
+                        ->{'get'.ucfirst($position)}()
+                        ->setBorderStyle($option['border'][$position]);
+                }
+            }
+        } else {
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getBorders()
+                ->getAllBorders()
+                ->setBorderStyle($option['border']);
+        }
+    }
+
+    /**
+     * setAlign.
+     */
+    private function setAlign($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getAlignment()
+                ->setHorizontal($option['align']);
+    }
+
+    /**
+     * setHorizontal.
+     */
+    private function setHorizontal($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getAlignment()
+                ->setHorizontal($option['hAlign']);
+    }
+
+    /**
+     * setVertical.
+     */
+    private function setVertical($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getAlignment()
+                ->setVertical($option['vAlign']);
+    }
+
+    /**
+     * setFont.
+     */
+    private function setFont($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFont()
+                ->setName($option['font']);
+    }
+
+    /**
+     * setFontColoer.
+     */
+    private function setFontColoer($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        if (strlen($option['color']) === 8) {
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFont()
+                ->getColor()
+                ->setARGB($option['color']);
+        } elseif (strlen($option['color']) === 6) {
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFont()
+                ->getColor()
+                ->setRGB($option['color']);
+        }
+    }
+
+    /**
+     * setFontSize.
+     */
+    private function setFontSize($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFont()
+                ->setSize($option['size']);
+    }
+
+    private function setBackgroundColor($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $type = empty($option['backgroundType']) ? PHPExcel_Style_Fill::FILL_SOLID : $option['backgroundType'];
+        if (strlen($option['backgroundColor']) === 8) {
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFill()
+                ->setFillType($type);
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFill()
+                ->getStartColor()
+                ->setARGB($option['backgroundColor']);
+        } elseif (strlen($option['backgroundColor']) === 6) {
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFill()
+                ->setFillType($type);
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFill()
+                ->getStartColor()
+                ->setRGB($option['backgroundColor']);
+        }
     }
 
     /**
