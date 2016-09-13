@@ -173,9 +173,7 @@ class Xlsx
             $this->setAlign($option);
         }
         if (array_key_exists('hAlign', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                ->getAlignment()
-                ->setHorizontal($option['hAlign']);
+            $this->setHorizontal($option);
         }
 
         // align vertical
@@ -273,6 +271,9 @@ class Xlsx
         if (array_key_exists('align', $option)) {
             $this->setAlign($option);
         }
+        if (array_key_exists('hAlign', $option)) {
+            $this->setHorizontal($option);
+        }
 
         return $this;
     }
@@ -325,6 +326,18 @@ class Xlsx
         $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getAlignment()
                 ->setHorizontal($option['align']);
+    }
+
+    /**
+     * setAlign.
+     */
+    private function setHorizontal($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getAlignment()
+                ->setHorizontal($option['hAlign']);
     }
 
     /**
