@@ -150,7 +150,7 @@ class Xlsx
                                                 'row' => '1',
                                                 'sheet' => 0, ])
     {
-        if (!$this->checkKeysFromOptions(['col', 'row'], $option)) {
+        if (!$this->checkKeysFromOption(['col', 'row'], $option)) {
             return false;
         }
         if (!array_key_exists('sheet', $option)) {
@@ -213,7 +213,7 @@ class Xlsx
                                           'toRow' => '1',
                                           'sheet' => 0, ])
     {
-        if (!$this->checkKeysFromOptions(['fromCol', 'fromRow', 'toCol', 'toRow'], $option)) {
+        if (!$this->checkKeysFromOption(['fromCol', 'fromRow', 'toCol', 'toRow'], $option)) {
             return false;
         }
         if (!array_key_exists('sheet', $option)) {
