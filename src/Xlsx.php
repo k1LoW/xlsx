@@ -165,21 +165,7 @@ class Xlsx
 
         // border
         if (array_key_exists('border', $option)) {
-            if (is_array($option['border'])) {
-                foreach (['top', 'right', 'left', 'bottom'] as $position) {
-                    if (array_key_exists($position, $option['border'])) {
-                        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                            ->getBorders()
-                            ->{'get'.ucfirst($position)}()
-                            ->setBorderStyle($option['border'][$position]);
-                    }
-                }
-            } else {
-                $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                    ->getBorders()
-                    ->getAllBorders()
-                    ->setBorderStyle($option['border']);
-            }
+            $this->setBorder($option);
         }
 
         // align horizontal
@@ -282,12 +268,29 @@ class Xlsx
 
         // border
         if (array_key_exists('border', $option)) {
-            $this->setBorder($sheet);
+            $this->setBorder($option);
         }
 
         return $this;
     }
 
+    /**
+     * checkKeysFromOption.
+     */
+    private function checkKeysFromOption($keys, $option)
+    {
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $option)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * setBorder.
+     */
     private function setBorder($option)
     {
         $sheet = $this->xlsx->getActiveSheet();
@@ -310,17 +313,15 @@ class Xlsx
     }
 
     /**
-     * checkKeysFromOption.
+     * setAlign.
      */
-    private function checkKeysFromOption($keys, $option)
+    private function setAlign($option)
     {
-        foreach ($keys as $key) {
-            if (!array_key_exists($key, $option)) {
-                return false;
-            }
-        }
+        $sheet = $this->xlsx->getActiveSheet();
 
-        return true;
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getAlignment()
+                ->setHorizontal($option['align']);
     }
 
     /**
