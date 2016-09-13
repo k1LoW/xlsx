@@ -183,9 +183,7 @@ class Xlsx
 
         // font
         if (array_key_exists('font', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                ->getFont()
-                ->setName($option['font']);
+            $this->setFont($option);
         }
 
         // font color
@@ -278,6 +276,11 @@ class Xlsx
             $this->setVertical($option);
         }
 
+        // font
+        if (array_key_exists('font', $option)) {
+            $this->setFont($option);
+        }
+
         return $this;
     }
 
@@ -353,6 +356,18 @@ class Xlsx
         $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getAlignment()
                 ->setVertical($option['vAlign']);
+    }
+
+    /**
+     * setFont.
+     */
+    private function setFont($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFont()
+                ->setName($option['font']);
     }
 
     /**
