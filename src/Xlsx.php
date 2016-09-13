@@ -170,9 +170,7 @@ class Xlsx
 
         // align horizontal
         if (array_key_exists('align', $option)) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
-                ->getAlignment()
-                ->setHorizontal($option['align']);
+            $this->setAlign($option);
         }
         if (array_key_exists('hAlign', $option)) {
             $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
@@ -269,6 +267,11 @@ class Xlsx
         // border
         if (array_key_exists('border', $option)) {
             $this->setBorder($option);
+        }
+
+        // align horizontal
+        if (array_key_exists('align', $option)) {
+            $this->setAlign($option);
         }
 
         return $this;
