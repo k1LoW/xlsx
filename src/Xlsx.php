@@ -168,6 +168,7 @@ class Xlsx
             $this->setBorder($option);
         }
 
+        
         // align horizontal
         if (array_key_exists('align', $option)) {
             $this->setAlign($option);
@@ -213,7 +214,7 @@ class Xlsx
                                           'toRow' => '1',
                                           'sheet' => 0, ])
     {
-        if (!$this->checkKeysFromOption(['fromCol', 'fromRow', 'toCol', 'toRow'], $option)) {
+        if (!$this->checkKeysFromOption(['col', 'row', 'toCol', 'toRow'], $option)) {
             return false;
         }
         if (!array_key_exists('sheet', $option)) {
@@ -226,7 +227,7 @@ class Xlsx
         $sheet = $this->xlsx->getActiveSheet();
 
         // mergeCell
-        $cell = $option['fromCol'].$option['fromRow'];
+        $cell = $option['col'].$option['row'];
         $cell .= ':'.$option['toCol'].$option['toRow'];
         $sheet->mergeCells($cell);
 
