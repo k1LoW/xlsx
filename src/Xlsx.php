@@ -303,7 +303,7 @@ class Xlsx
                 }
             }
         } else {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getBorders()
                 ->getAllBorders()
                 ->setBorderStyle($option['border']);
