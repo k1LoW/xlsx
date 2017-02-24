@@ -208,13 +208,13 @@ class Xlsx
     /**
      * mergeCells.
      */
-    public function mergeCells($option = ['fromCol' => 'A',
-                                          'fromRow' => '1',
+    public function mergeCells($option = ['col' => 'A',
+                                          'row' => '1',
                                           'toCol' => 'A',
                                           'toRow' => '1',
                                           'sheet' => 0, ])
     {
-        if (!$this->checkKeysFromOption(['fromCol', 'fromRow', 'toCol', 'toRow'], $option)) {
+        if (!$this->checkKeysFromOption(['col', 'row', 'toCol', 'toRow'], $option)) {
             return false;
         }
         if (!array_key_exists('sheet', $option)) {
@@ -227,7 +227,7 @@ class Xlsx
         $sheet = $this->xlsx->getActiveSheet();
 
         // mergeCell
-        $cell = $option['fromCol'].$option['fromRow'];
+        $cell = $option['col'].$option['row'];
         $cell .= ':'.$option['toCol'].$option['toRow'];
         $sheet->mergeCells($cell);
 
@@ -296,7 +296,7 @@ class Xlsx
         if (is_array($option['border'])) {
             foreach (['top', 'right', 'left', 'bottom'] as $position) {
                 if (array_key_exists($position, $option['border'])) {
-                    $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+                    $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                         ->getBorders()
                         ->{'get'.ucfirst($position)}()
                         ->setBorderStyle($option['border'][$position]);
@@ -317,7 +317,7 @@ class Xlsx
     {
         $sheet = $this->xlsx->getActiveSheet();
 
-        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getAlignment()
                 ->setHorizontal($option['align']);
     }
@@ -329,7 +329,7 @@ class Xlsx
     {
         $sheet = $this->xlsx->getActiveSheet();
 
-        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getAlignment()
                 ->setHorizontal($option['hAlign']);
     }
@@ -341,7 +341,7 @@ class Xlsx
     {
         $sheet = $this->xlsx->getActiveSheet();
 
-        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getAlignment()
                 ->setVertical($option['vAlign']);
     }
@@ -353,7 +353,7 @@ class Xlsx
     {
         $sheet = $this->xlsx->getActiveSheet();
 
-        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getFont()
                 ->setName($option['font']);
     }
@@ -366,12 +366,12 @@ class Xlsx
         $sheet = $this->xlsx->getActiveSheet();
 
         if (strlen($option['color']) === 8) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getFont()
                 ->getColor()
                 ->setARGB($option['color']);
         } elseif (strlen($option['color']) === 6) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getFont()
                 ->getColor()
                 ->setRGB($option['color']);
@@ -385,7 +385,7 @@ class Xlsx
     {
         $sheet = $this->xlsx->getActiveSheet();
 
-        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getFont()
                 ->setSize($option['size']);
     }
@@ -396,17 +396,17 @@ class Xlsx
 
         $type = empty($option['backgroundType']) ? PHPExcel_Style_Fill::FILL_SOLID : $option['backgroundType'];
         if (strlen($option['backgroundColor']) === 8) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getFill()
                 ->setFillType($type);
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])->getFill()
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])->getFill()
                 ->getStartColor()
                 ->setARGB($option['backgroundColor']);
         } elseif (strlen($option['backgroundColor']) === 6) {
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getFill()
                 ->setFillType($type);
-            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['fromCol']), $option['fromRow'])
+            $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getFill()
                 ->getStartColor()
                 ->setRGB($option['backgroundColor']);
