@@ -197,6 +197,11 @@ class Xlsx
             $this->setFontSize($option);
         }
 
+        // font bold
+        if (array_key_exists('bold', $option)) {
+            $this->setFontBold($option);
+        }
+
         // backgroundColor / backgroundType
         if (array_key_exists('backgroundColor', $option)) {
             $this->setBackgroundColor($option);
@@ -262,6 +267,11 @@ class Xlsx
         // font size
         if (array_key_exists('size', $option)) {
             $this->setFontSize($option);
+        }
+
+        // font bold
+        if (array_key_exists('bold', $option)) {
+            $this->setFontBold($option);
         }
 
         // backgroundColor / backgroundType
@@ -356,6 +366,18 @@ class Xlsx
         $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
                 ->getFont()
                 ->setName($option['font']);
+    }
+
+    /**
+     * setFontBold.
+     */
+    private function setFontBold($option)
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $sheet->getStyleByColumnAndRow(self::alphabetToNumber($option['col']), $option['row'])
+                ->getFont()
+                ->setBold($option['bold']);
     }
 
     /**
