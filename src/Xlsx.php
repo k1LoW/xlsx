@@ -524,4 +524,14 @@ class Xlsx
             return false;
         }
     }
+
+    /**
+    *duplicateStyle
+    */
+    public function duplicateStyle($cellStyle = null, $range = '')
+    {
+        $sheet = $this->xlsx->getActiveSheet();
+
+        $sheet->duplicateStyle($sheet->getStyle($cellStyle), $range);
+    }
 }
